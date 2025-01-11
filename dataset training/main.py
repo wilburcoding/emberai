@@ -1,10 +1,11 @@
 from herbie import Herbie
 import pandas as pd
 import csv
-
+import random
 df = pd.read_csv('wildfiredataset.csv')
-value = df.loc[0, 'AcresBurned']
-print(value)
+value = df.loc[10, 'AcresBurned']
+randFires = [random.randint(0, len(df.loc[:])) for i in range(250)]
+randFires = list(set(randFires))
 loc = (35.4676, -97.5164)
 
 points = pd.DataFrame(
