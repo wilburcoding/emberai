@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>EmberAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="https://kit.fontawesome.com/3f34c302de.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <div id="navbar">
+    <p onclick="window.location.href='/forecast'">FORECAST</p>
+    <p onclick="window.location.href='/'" style="margin-right:0;color:#Ff6161;font-size:20px;font-weight: 600;">EMBER.AI
+    </p>
+    <img src="{{ url_for('static', filename='logo.png') }}" height="30" width="30" />
+    <p onclick="window.location.href='/about'" style="margin-right:40px;">ABOUT</p>
+  </div>
+  <div id="background-img">
+    <img src="{{ url_for('static', filename='emberaimainbg.png') }}"
+      style="height:100vh;width:100%;z-index:10;pointer-events: none;  " />
+  </div>
+  <div id="head" style="z-index:50">
+    <div id="head-content">
+
+      <h1 style="font-size:70px;margin-bottom:3px;">Risk Forecast</h1>
+
+
+      <p style="font-size:25px;margin-top:3px;color:rgb(54, 54, 54);margin-bottom:6px;text-align: left;">
+        Get your forecast from our trained machine learning algorithm.
+      </p>
+
+      <div style="display:flex;flex-direction: row;width:100%">
+        <input type="text" placeholder="Location" id="in" style="width:90%;border-radius: 4px 0px 0px 4px" />
+        <button class="primary" id="search" style="width:10%;border-radius:0px 4px 4px 0px">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <div id="results"></div>
+
+    </div>
+  </div>
+
+  <div id="main" style="height:180vh;display:flex;">
+    <div id="maincontent" class="mainh"
+      style="background-color: white;border-radius:15px;flex-direction: column;width:90%;height:90vh;align-items: center;justify-content: center;height:170vh">
+
+      <div
+        style="display:flex;width:50%;border:solid 1px black;height:190px;background-color:white;border-radius:25px;">
+        <div id="eindex"
+          style="width:300px;height:300px;position:absolute;min-width:300px;min-height:300px;border-radius: 50%;margin-left:-50px;margin-top:-40px;background-color: white;display:flex;flex-direction: column;align-items: center;justify-content: center;">
+          <p>EMBER INDEX</p>
+          <p style="font-size:50px;font-weight: 600;" id="eindexm">HIGH</p>
+        </div>
+
+        <div
+          style="margin-left:40%;height:190px;display:flex;flex-direction: column;justify-content: center;align-items: flex-start;align-self: flex-end;justify-self: flex-end;">
+          <h1 style="font-size:30px;text-wrap: balance;" id="name">Los Angeles, California</h1>
+          <p id="coord">Coordinates -39.919299, 48.23842938</p>
+          <hr style="margin-top:10px;margin-bottom:10px;width:90%">
+          <div style="display:flex;flex-direction:row;margin-top:10px;">
+            <p style="font-size:20px;width:100px;margin-right:30px;font-weight:600">Current Conditions</p>
+            <div style="text-align: center;">
+              <p style="font-size:10px;">HUMIDITY </p>
+              <p style="font-size:25px;" id="rhc">45%</p>
+            </div>
+            <div style="margin-left:20px;text-align: center;">
+              <p style="font-size:10px;">WIND SPEED</p>
+              <p style="font-size:25px;" id="windc">15 mph</p>
+            </div>
+            <div style="margin-left:20px;text-align: center;">
+              <p style="font-size:10px;">TEMP</p>
+              <p style="font-size:25px;" id="tempc">50F</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <h1 style="margin-top:20vh;font-size:25px;margin-bottom:2px;">12 hour Future Forecast</h1>
+      <hr style="margin-top:10px;width:70%;">
+      <h1 style="font-size:15px;margin-top:3vh;">Wind Forecast</h1>
+      <div
+        style="display:flex;width:70%;margin-top:5px;padding:5px;background-color:white;border-radius:25px;flex-direction: column;align-items: center;justify-content: center;">
+        <div>
+          <canvas id="wind" width="720px" height="300"></canvas>
+        </div>
+      </div>
+      <h1 style="font-size:15px;margin-top:3vh;">Humidity Forecast</h1>
+      <div
+        style="display:flex;width:70%;margin-top:5px;padding:5px;background-color:white;border-radius:25px;flex-direction: column;align-items: center;justify-content: center;">
+        <div>
+          <canvas id="rh" width="720px" height="300"></canvas>
+        </div>
+      </div>
+
+    </div>
+    <div id="mloading"
+      style="background-color: white;border-radius:15px;flex-direction: column;width:90%;height:90vh;align-items: center;justify-content: flex-start;height:170vh">
+      <h1 style="margin-top:50px;">Loading....</h1>
+
+    </div>
+  </div>
+  <script>
+    $("#main").hide();
+    $(".mainh").hide();
+    $("#search").on("click", function () {
+      fetch("https://api.mapbox.com/search/geocode/v6/forward?q=" + $("#in").val() + "&access_token=pk.eyJ1IjoiaXBhZGRyZXNzZXNhcmVjb29sIiwiYSI6ImNremg3ejc4YjNxOGgycnBydzVkejN1ZnIifQ.dowjcNgmivNRA9W_a9b96g")
+        .then((data) => data.json())
+        .then((data) => {
+          var data = data["features"]
+          $("#results").html("")
+          for (var item of data) {
+            const loc = item.properties.coordinates
+            console.log(item.properties)
+            const name = item.properties.full_address
+            $("#results").append("<p class=\"location\" style='text-align:left !important' id='" + loc.latitude + "," + loc.longitude + "'>" + name + "</p>")
+          }
+          $(".location").on("click", function () {
+            console.log("ea")
+            $("#main").show()
+            let loc = $(this).html()
+            let c = $(this).attr("id")
+            console.log(c)
+            $("#main").show()
+            fetch("https://api.tomorrow.io/v4/weather/forecast?location=" + loc + "&apikey=xGP5x8zeaZE4nmDl28zhgOt5iIWm3RVO")
+              .then((data) => data.json())
+              .then((data) => {
+                const hourly = data.timelines.hourly
+                const current = hourly[0]
+                $("#rhc").html(current.values.humidity + "%")
+                $("#windc").html(Math.round(current.values.windSpeed) + " mph")
+                $("#tempc").html(Math.round(current.values.temperature * 9 / 5 + 32) + "F")
+                $("#coord").html("Coordinates: " + (c.split(",")[0]) + ", " + (c.split(",")[1]))
+                $("#name").html(loc)
+                fetch("http://localhost:8081?temp=" + Math.round(current.values.temperature * 9 / 5 + 32) + "&humidity=" + current.values.humidity + "&wind=" + Math.round(current.values.windSpeed))
+                  .then((data) => data.json())
+                  .then((data) => {
+                    const result = Number(data.result);
+                    if (result < 8000) {
+                      $("#eindex").css("border", "solid 50px #ffd261")
+                      $("#eindexm").html("LOW")
+                    } else if (result < 17000) {
+                      $("#eindex").css("border", "solid 50px #ff9561")
+                      $("#eindexm").html("MID")
+
+                    } else {
+                      $("#eindex").css("border", "solid 50px #Ff6161")
+                      $("#eindexm").html("HIGH")
+
+                    }
+                    $("#mloading").hide();
+                    $(".mainh").show();
+                    const ctx = document.getElementById('wind');
+                    const ctx2 = document.getElementById('rh');
+
+                    const data3 = {
+                      labels: ["Now", "4 hour", "8 hour", "12 hour", "16 hour", "20 hour", "24 hour"],
+                      datasets: [{
+                        label: 'Wind',
+                        data: [hourly[0].values.windSpeed, hourly[4].values.windSpeed, hourly[8].values.windSpeed, hourly[12].values.windSpeed, hourly[16].values.windSpeed, hourly[20].values.windSpeed, hourly[24].values.windSpeed],
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                      }]
+                    };
+                    const config = {
+                      type: 'line',
+                      data: data3,
+                      options: {
+                        plugins: {
+                          legend: {
+                            display: false,
+                          }
+                        },
+                        scales: {
+                          x: {
+                            beginAtZero: true,
+                            grid: {
+                              display: false
+                            }
+                          },
+                          y: {
+                            beginAtZero: true,
+                            grid: {
+                              display: false
+                            }
+                          }
+                        }
+                      }
+                    };
+                    const chart = new Chart(ctx, config)
+                    const data2 = {
+                      labels: ["Now", "4 hour", "8 hour", "12 hour", "16 hour", "20 hour", "24 hour"],
+                      datasets: [{
+                        label: 'Humidity',
+                        data: [hourly[0].values.humidity, hourly[4].values.humidity, hourly[8].values.humidity, hourly[12].values.humidity, hourly[16].values.humidity, hourly[20].values.humidity, hourly[24].values.humidity],
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                      }]
+                    };
+                    const config2 = {
+                      type: 'line',
+                      data: data2,
+                      options: {
+                        plugins: {
+                          legend: {
+                            display: false,
+                          }
+                        },
+                        scales: {
+                          x: {
+                            beginAtZero: true,
+                            grid: {
+                              display: false
+                            }
+                          },
+                          y: {
+                            beginAtZero: true,
+                            grid: {
+                              display: false
+                            }
+                          }
+                        }
+                      }
+                    };
+                    const chart2 = new Chart(ctx2, config2)
+                  })
+
+
+              })
+          })
+        })
+    })
+
+  </script>
+
+
+
+</body>
+
+</html>

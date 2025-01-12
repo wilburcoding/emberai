@@ -3,12 +3,45 @@
 
 <head>
   <title>EmberAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+
 </head>
 
 <body>
-  <h1></h1>
+  <div id="navbar">
+    <p onclick="window.location.href='/forecast'">FORECAST</p>
+    <p onclick="window.location.href='/'" style="margin-right:0;color:#Ff6161;font-size:20px;font-weight: 600;">EMBER.AI</p>
+    <img src="{{ url_for('static', filename='logo.png') }}" height="30" width="30" />
+    <p  onclick="window.location.href='/about'" style="margin-right:40px;">ABOUT</p>
+  </div>
+  <div id="background-img">
+    <img src="{{ url_for('static', filename='emberaimainbg.png') }}" style="height:100vh;width:100%;pointer-events: none;"/>
 
+  </div>
+  <div id="head">
+    <div id="head-content"> 
+      <h1 style="font-size:70px;margin-bottom:3px;">EMBER.AI</h1>
+      <p style="font-size:25px;margin-top:3px;color:rgb(54, 54, 54);margin-bottom:6px;text-align:left">Revolutionary machine learning algorithm for calculating wildfire risk.</p>
+      <div style="display:flex;flex-direction: row;">
+        <button class="primary" style="font-size:15px;margin-right:5px;"
+                onclick="window.location.href='{{ url_for('forecast') }}'">
+          See Your Forecast
+        </button>
+        <button class="secondary" style="font-size:15px;"
+                onclick="window.location.href='{{ url_for('about') }}'">
+          About
+        </button>
+        
+
+      </div>
+    </div>
+
+  </div>
 
 </body>
 
-</html>
+</html> 

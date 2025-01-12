@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EmberAI Resources</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet"
+  >
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static', filename='css/styles.css') }}"
+  />
+</head>
+
+<body>
+
+  <div id="navbar">
+    <p onclick="window.location.href='/forecast'">FORECAST</p>
+    <p onclick="window.location.href='/'" style="margin-right:0;color:#Ff6161;font-size:20px;font-weight: 600;">EMBER.AI</p>
+    <img src="{{ url_for('static', filename='logo.png') }}" height="30" width="30" />
+    <p  onclick="window.location.href='/about'" style="margin-right:40px;">ABOUT</p>
+  </div>
+  <div id="background-img">
+    <img
+      src="{{ url_for('static', filename='emberbg2.png') }}"
+      style="height:100vh;width:100%;pointer-events: none;margin-top:30vh;"
+      alt="Flame background"
+    />
+  </div>
+
+  <div id="resources-content" style="z-index:300">
+    <h1>About</h1>
+
+    <section id="influence">
+      <h2>Our Inspiration</h2>
+      <p>
+        From 2001 to 2020, the United States has averaged an incredible
+        <strong>68,707 wildfires</strong> annually—and those fires don’t just stay put.
+        If you remember the Canadian wildfires of 2023, you’ll know the smoke didn’t need a
+        passport to drift right on over to New York, rendering everything with a
+        “<em>Breaking Bad</em>” filter. Meanwhile, out on the West Coast, LA fires have
+        been making headlines again, reminding us that wildfires can ignite anywhere, any time.
+        Seeing the widespread devastation and the ever-increasing number of wildfires firsthand
+        inspired us to create a dynamic model and an easy-to-use website. We wanted to empower
+        communities with the tools they need to understand their wildfire risk and take proactive
+        steps to protect their homes and loved ones.
+      </p>
+      <p>
+        You can find the relevant data here:
+        <a
+          href="https://www.ncei.noaa.gov/access/monitoring/monthly-report/fire/202213"
+          target="_blank"
+          rel="noopener"
+        >
+          official NOAA Fire Report
+        </a>.
+      </p>
+    </section>
+
+    <section id="our-team">
+      <h2>Our Team</h2>
+      <div id="team-grid">
+        <!-- Team Member 1 -->
+        <div class="team-member">
+          <h3>Aaron</h3>
+          <p>Chief Data Officer</p>
+        </div>
+        <!-- Team Member 2 -->
+        <div class="team-member">
+          <h3>Wilbur</h3>
+          <p>Chief Technology Officer</p>
+        </div>
+        <!-- Team Member 3 -->
+        <div class="team-member">
+          <h3>Raymond</h3>
+          <p>Chief Planning Officer</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
